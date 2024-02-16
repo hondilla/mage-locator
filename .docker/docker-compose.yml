@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  php:
+    container_name: ${COMPOSE_PROJECT_NAME}-php
+    environment:
+    - XDEBUG_MODE=coverage,debug
+    - PHP_IDE_CONFIG=serverName=${COMPOSE_PROJECT_NAME}
+    image: ${COMPOSE_PROJECT_NAME}-php
+    build:
+      context: "php"
+      args:
+        UID: ${UID}
+        GID: ${GID}
+    networks:
+    - docker
+    volumes:
+    - ../:/app
+    - ~/.config/composer/auth.json:/home/app/.composer/auth.json
+    - ~/.ssh/:/home/app/.ssh:ro
+networks:
+  docker:
+    name: ${COMPOSE_PROJECT_NAME}-network
