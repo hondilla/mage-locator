@@ -1,7 +1,7 @@
 version: '3'
 
 env:
-  COMPOSE_PROJECT_NAME: mage_class_locator
+  COMPOSE_PROJECT_NAME: mage_locator
   UID:
     sh: 'if [ `echo $(id -u) -lt 1000` ]; then echo 1000; else echo $(id -u); fi'
   GID:

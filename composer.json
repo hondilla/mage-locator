@@ -1,11 +1,11 @@
 {
-  "name": "mage-universe/class-locator",
+  "name": "mage-universe/locator",
   "keywords": [
     "omatech",
     "mage",
-    "class-locator"
+    "locator"
   ],
-  "homepage": "https://github.com/mage-universe/class-locator",
+  "homepage": "https://github.com/mage-universe/locator",
   "license": "MIT",
   "type": "library",
   "authors": [
@@ -35,7 +35,7 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "Mage\\Class\\": "src/"
+      "Mage\\Locator\\": "src/"
     }
   },
   "autoload-dev": {

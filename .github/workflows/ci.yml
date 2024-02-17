@@ -1,11 +1,11 @@
-name: Mage Class Locator
+name: Mage Locator
 
 on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Mage Class Locator Build
+    name: Mage Locator Build
     strategy:
       matrix:
         php-versions:

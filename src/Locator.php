@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Mage\Class;
+namespace Mage\Locator;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -9,37 +9,31 @@ use function Lambdish\Phunctional\reduce;
 
 final readonly class Locator
 {
-    public function __construct(private array $paths) {}
+    public function __construct(private Paths $paths) {}
 
-    public function getClasses(): array
+    public function classes(): array
     {
-        /** @psalm-var array<int, SplFileInfo> $files */
-        $files = reduce(
-            /** @psalm-param array<string, string> $path */
-            function (array $acc, array $path): array {
-                return [...$acc, ...$this->searchFiles($path)];
-            },
-            $this->paths,
-            []
-        );
-
-        return $this->filesToClasses($files);
+        return $this->filesToClasses($this->files());
     }
 
-    /** @psalm-param array<string, string> $pathOptions */
-    private function searchFiles(array $pathOptions): array
+    public function files(): array
     {
-        if (!is_dir($pathOptions['path'])) {
-            return [];
-        }
-
         /** @psalm-var array<int, SplFileInfo> */
-        return reduce(function (array $acc, SplFileInfo $file) use ($pathOptions): array {
-            if ($file->isFile() && $this->matchFiles($pathOptions['pattern'], $file)) {
-                $acc[] = $file;
+        return reduce(function (array $acc, Path $pathOptions): array {
+            if (!is_dir($pathOptions->root())) {
+                return [];
             }
-            return $acc;
-        }, new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pathOptions['path'])), []);
+
+            /** @psalm-var array<int, SplFileInfo> $files */
+            $files = reduce(function (array $acc, SplFileInfo $file) use ($pathOptions): array {
+                if ($file->isFile() && $this->matchFiles($pathOptions->pattern(), $file)) {
+                    $acc[] = $file;
+                }
+                return $acc;
+            }, new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pathOptions->root())), []);
+
+            return [...$acc, ...$files];
+        }, $this->paths->paths(), []);
     }
 
     private function matchFiles(string $pattern, SplFileInfo $file): bool
